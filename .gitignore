@@ -24,6 +24,9 @@ secrets.yaml
 secrets.toml
 config.local.*
 
+# 本地项目规划文档
+bbwatch Windows Support PRD.md
+
 # 下载的课件镜像（体积大，不入库）
 downloads/
 mirror/
