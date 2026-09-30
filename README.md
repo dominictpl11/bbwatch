@@ -85,12 +85,14 @@ python3 scripts/install_codex.py
 Windows CLI 不要求安装 Codex，也不使用 WSL。请在 PowerShell 中运行：
 
 ```powershell
-git clone -b feat/windows-support https://github.com/dominictpl11/bbwatch.git
+git clone https://github.com/jsyzlbw/bbwatch.git
 cd bbwatch
-py -3.11 scripts/install_codex.py --cli-only
+py scripts/install_codex.py --cli-only
 ```
 
-安装器会把 venv 的 `Scripts` 目录加入当前用户 PATH；请新开一个 PowerShell，再运行：
+`py` 默认使用已安装的最新版 Python；版本低于 3.11 时安装器会停止并提示。需要指定解释器时，可加 `--python <python.exe 路径>`。
+
+安装器会把 venv 的 `Scripts` 目录加入当前用户 PATH，并打印 MCP 启动命令；它不会修改 Claude Code、Codex 或 Cursor 的配置，如需接入 AI 客户端，需要另外把该命令添加到客户端的 MCP 配置中（本版本不包含这一步）。请新开一个 PowerShell，再运行：
 
 ```powershell
 bbwatch setup

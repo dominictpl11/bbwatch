@@ -4,9 +4,9 @@
 
 - **项目名称**：bbwatch
 
-- **开发分支**：`feat/windows-support`
+- **开发分支**：`feat/windows-support-core`（运行时与安装器，PR #1）、`docs/windows-support`（文档，PR #2，依赖 PR #1）
 
-- **目标仓库**：`dominictpl11/bbwatch`
+- **目标仓库**：`jsyzlbw/bbwatch`（通过 fork `dominictpl11/bbwatch` 提交）
 
 - **上游仓库**：`jsyzlbw/bbwatch`
 
@@ -29,6 +29,17 @@
 - **目标学校**：香港中文大学（深圳）CUHK-Shenzhen
 
 - **目标系统**：CUHK-SZ Blackboard
+
+---
+
+## 本版本交付范围
+
+本 PRD 描述 Windows 支持的完整目标。当前版本（PR #1 + PR #2）只交付其中的 **Windows 原生 CLI**；下文中标注“后续阶段”的需求不属于本版本的验收范围。
+
+| 范围 | 内容 |
+| :--- | :--- |
+| **本版本已交付** | `py scripts/install_codex.py --cli-only` 原生安装（不需要 WSL、Codex 或管理员权限）；Windows venv 与路径辅助函数；Windows Credential Manager 凭据存储；把 venv `Scripts` 加入当前用户 PATH；MCP Server 可在 Windows 上启动（安装器只打印启动命令）；本地代理兼容；`bbwatch setup / whoami / scan / tasks / courses / download / dashboard` |
+| **后续阶段** | Claude Code Windows hooks 与插件安装（Phase 2）；Windows 上的 Codex 插件注册（Phase 3）；自动写入 AI 客户端的 MCP 配置；Windows Toast 系统通知（Phase 4）；Cursor 集成；Windows CI |
 
 ---
 
@@ -106,11 +117,11 @@ Windows 用户目前无法获得完整、稳定、低门槛的原生体验。
 
 5. Windows MCP 启动
 
-6. Claude Code Windows 支持
+6. Claude Code Windows 支持（后续阶段）
 
-7. Codex Windows 支持
+7. Codex Windows 支持（后续阶段）
 
-8. Windows 系统通知
+8. Windows 系统通知（后续阶段）
 
 9. Windows 代理环境兼容
 
@@ -320,17 +331,29 @@ scripts/install_codex.py
 
 ## Windows 安装流程
 
-理想流程：
+本版本的实际流程（最终采用了重构 `scripts/install_codex.py` 的方案）：
 
 ```
-git clone https://github.com/dominictpl11/bbwatch.gitcd bbwatchpy scripts/install_windows.py
+git clone https://github.com/jsyzlbw/bbwatch.git
+cd bbwatch
+py scripts/install_codex.py --cli-only
 ```
 
 安装器自动完成：
 
 ```
-检测 Python↓检测 Python >= 3.11↓创建 bbwatch runtime↓创建 venv↓安装 dependencies↓安装 bbwatch↓配置 CLI↓配置 MCP↓检测 Codex / Claude Code↓输出下一步操作
+检测 Python >= 3.11
+↓
+创建 bbwatch runtime 与 venv
+↓
+安装 dependencies 与 bbwatch
+↓
+把 venv Scripts 加入当前用户 PATH（配置 CLI）
+↓
+打印 MCP 启动命令与下一步操作
 ```
+
+写入 AI 客户端的 MCP 配置、检测并注册 Codex / Claude Code 插件属于后续阶段。
 
 ---
 
@@ -340,7 +363,7 @@ Windows 用户无需：
 
 - 修改源码
 
-- 手动改 `.mcp.json`
+- 手动改 `.mcp.json`（后续阶段：本版本需手动把安装器打印的 MCP 命令加入客户端配置）
 
 - 手动寻找 Python executable
 
@@ -436,7 +459,7 @@ store_credentials()load_credentials()clear_credentials()
 
 ---
 
-# 8.5 Claude Code Windows 支持
+# 8.5 Claude Code Windows 支持（后续阶段）
 
 现有初始化依赖：
 
@@ -478,7 +501,7 @@ bootstrap.shbootstrap.ps1
 
 ---
 
-# 8.6 Codex Windows 支持
+# 8.6 Codex Windows 支持（插件注册为后续阶段；runtime 路径已在本版本交付）
 
 Codex 安装器目前存在 Unix 路径假设。
 
@@ -528,7 +551,7 @@ Windows 应使用更合理的数据目录，例如：
 python -m bbwatch.mcp_server
 ```
 
-Claude Code / Codex 的 MCP 配置应引用正确 Windows Python：
+Claude Code / Codex 的 MCP 配置应引用正确 Windows Python（本版本由安装器打印该命令，写入客户端配置为后续阶段）：
 
 ```
 C:\Users\<user>\...\python.exe
@@ -542,7 +565,7 @@ C:\Users\<user>\...\python.exe
 
 ---
 
-# 8.8 Cursor 支持
+# 8.8 Cursor 支持（后续阶段）
 
 Cursor 本身不需要独立 Blackboard Client。
 
@@ -570,7 +593,7 @@ Cursor ├─ Claude Code ├─ Codex └─ MCP
 
 ---
 
-# 8.9 Windows Notification
+# 8.9 Windows Notification（后续阶段）
 
 现有：
 
@@ -980,7 +1003,7 @@ bbwatch setupbbwatch whoamibbwatch scanbbwatch coursesbbwatch download CSC4303
 
 ---
 
-# Phase 2 — Claude Code Windows
+# Phase 2 — Claude Code Windows（后续阶段）
 
 目标：
 
@@ -1008,7 +1031,7 @@ Claude Code 能调用 bbwatch。
 
 ---
 
-# Phase 3 — Codex Windows
+# Phase 3 — Codex Windows（后续阶段）
 
 目标：
 
@@ -1028,7 +1051,7 @@ Codex 可以直接调用 bbwatch。
 
 ---
 
-# Phase 4 — Windows Notification
+# Phase 4 — Windows Notification（后续阶段）
 
 实现：
 
@@ -1222,7 +1245,7 @@ Windows 版本完成后，应达到：
 
 # 20. MVP Definition of Done
 
-Windows MVP 完成必须同时满足：
+Windows MVP 完成必须同时满足（这是完整 MVP 目标；本版本只交付其中的 CLI 部分，标注“后续阶段”的条目不在本版本验收范围内）：
 
 - Windows 10 / 11 可运行
 
@@ -1254,9 +1277,9 @@ Windows MVP 完成必须同时满足：
 
 - MCP Server 正常
 
-- Claude Code 可以调用
+- Claude Code 可以调用（后续阶段）
 
-- Codex 可以调用
+- Codex 可以调用（后续阶段）
 
 - 不需要 WSL
 

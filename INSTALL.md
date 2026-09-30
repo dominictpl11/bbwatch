@@ -111,10 +111,12 @@ Claude Code 版保留了 **SessionStart 自动刷新**：新会话先展示本�
 在 PowerShell 中从仓库目录运行：
 
 ```powershell
-py -3.11 scripts/install_codex.py --cli-only
+py scripts/install_codex.py --cli-only
 ```
 
-这只安装 bbwatch CLI 和 MCP 运行环境，不要求 Codex。新开 PowerShell 后使用 `bbwatch setup`、`bbwatch whoami`、`bbwatch scan`、`bbwatch tasks`、`bbwatch courses`、`bbwatch download <course>` 和 `bbwatch dashboard`。安装器会把 venv 的 `Scripts` 目录加入当前用户 PATH。
+`py` 默认使用已安装的最新版 Python；版本低于 3.11 时安装器会停止并提示，也可以用 `--python <python.exe 路径>` 指定解释器。
+
+这只安装 bbwatch CLI 和 MCP 运行环境，不要求 Codex。安装器会打印 MCP 启动命令，但不会修改任何 AI 客户端配置；接入 Claude Code 等客户端是单独的一步，本版本不包含。新开 PowerShell 后使用 `bbwatch setup`、`bbwatch whoami`、`bbwatch scan`、`bbwatch tasks`、`bbwatch courses`、`bbwatch download <course>` 和 `bbwatch dashboard`。安装器会把 venv 的 `Scripts` 目录加入当前用户 PATH。
 
 ### macOS / Linux
 
