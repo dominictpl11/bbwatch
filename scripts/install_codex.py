@@ -7,6 +7,16 @@ The managed runtime is deliberately outside Codex's disposable plugin cache.
 
 from __future__ import annotations
 
+import sys
+
+# Check before any import that needs Python 3.11, so older interpreters get this
+# message instead of an ImportError.
+if sys.version_info < (3, 11):  # noqa: UP036 - this script also runs before package installation
+    sys.exit(
+        "Installation stopped: run this installer using Python 3.11 or newer "
+        f"(found {sys.version_info[0]}.{sys.version_info[1]})."
+    )
+
 import argparse
 import copy
 import json
@@ -14,7 +24,6 @@ import os
 import re
 import shutil
 import subprocess
-import sys
 import tempfile
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -442,8 +451,6 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--dry-run", action="store_true", help="Show planned paths without changes")
     args = parser.parse_args(argv)
-    if sys.version_info < (3, 11):  # noqa: UP036 - this script also runs before package installation
-        parser.error("Run this installer using Python 3.11 or newer.")
     try:
         repo = Path(__file__).resolve().parents[1]
         if args.cli_only:

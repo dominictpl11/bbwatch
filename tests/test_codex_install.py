@@ -84,6 +84,21 @@ def fake_runner(installer, plan, commands, *, fail_install=False):
     return run
 
 
+def test_old_python_is_rejected_before_newer_imports():
+    # Simulate Python 3.9: its datetime has no UTC, which the installer imports.
+    script = (
+        "import datetime, runpy, sys; del datetime.UTC; sys.version_info = (3, 9, 0);"
+        f"sys.argv = ['install_codex.py', '--dry-run']; runpy.run_path({str(INSTALLER)!r},"
+        " run_name='__main__')"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", script], capture_output=True, text=True, timeout=30, check=False
+    )
+    assert result.returncode == 1
+    assert "Traceback" not in result.stderr
+    assert "Python 3.11 or newer (found 3.9)" in result.stderr
+
+
 def test_dry_run_shows_paths_without_mutation_or_processes(installer, paths, capsys):
     plan = make_plan(installer, paths)
     installer.install(plan, dry_run=True, run=lambda *a, **k: pytest.fail("process started"))
